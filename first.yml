@@ -1,0 +1,8 @@
+---
+ - hosts: a   # This is the target section  where you sepcify the inventory file group name or target machine
+   remote_user: ec2-user
+   tasks: 
+    - command: whoami 
+    - shell: cal
+    - yum: name=httpd state=present
+

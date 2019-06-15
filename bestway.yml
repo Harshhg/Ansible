@@ -1,0 +1,17 @@
+---
+ - hosts: a   # This is the target section  where you sepcify the inventory file group name or target machine
+   remote_user: ec2-user
+   tasks: 
+    - name: running whoami command   # Giving the name of the command.. as like a comment
+      yum:
+       name: httpd
+       state: present
+
+
+
+    - name: printing the message
+      debug:
+       msg="Hello World, this is Ansible"
+        
+
+
