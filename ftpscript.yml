@@ -1,5 +1,13 @@
+# go to /etc/ansible/hosts   and enter the IP address of the systems in which you want automation.. 
+#
+# In case of multiple systems / IPs ...  assign them group name as -->
+# [a]
+# IP1...
+# IP2...
+# IP3..
+
 ---
- - hosts: 13.235.82.246   # IP address of the target machine (In this case AWS )
+ - hosts: 13.235.82.246   # IP address of the target machine or group name (In this case AWS )
    remote_user: ec2-user  # User name of target machine.. (In this case AWS user )
    sudo: yes
    tasks: 
