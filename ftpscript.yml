@@ -1,0 +1,19 @@
+---
+ - hosts: 13.235.82.246   # IP address of the target machine (In this case AWS )
+   remote_user: ec2-user  # User name of target machine.. (In this case AWS user )
+   sudo: yes
+   tasks: 
+    - name: Configuring FTP server
+      yum: 
+       name: vsftpd
+       state: latest
+    - name: Copying Files in /var/ftp/pub for access
+      copy:
+       src: ./public/     # Make a folder "public" and put your files into it, it will copy these files.
+       dest: /var/ftp/pub
+    - name: Starting the server
+      service:
+       name: vsftpd
+       state: started
+       enabled: yes
+ 
