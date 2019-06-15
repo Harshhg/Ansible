@@ -1,3 +1,4 @@
+# AUTO CONFIGURE  FTP server in linux and add files  
 # go to /etc/ansible/hosts   and enter the IP address of the systems in which you want automation.. 
 #
 # In case of multiple systems / IPs ...  assign them group name as -->
