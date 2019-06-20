@@ -1,0 +1,19 @@
+# Launch an AWS instance automatically..
+# Required modules :  awscli, boto or boto3 install using PIP
+# May get error if launched from root user..(boto error)
+
+
+---
+ - hosts: localhost
+   tasks: 
+    - ec2: 
+        key_name: harshawslinux  #  Access key that contains password
+        region: ap-south-1      # region name
+        instance_type: t2.micro      # instance type
+        image: ami-5b673c34     # aws instance image id..(fixed)
+        count: 1                # number of instances to launch
+        aws_access_key: AKIAJMFNVMJLVWF3GMYQ  # find your keys under security credentials
+        aws_secret_key: 1EFNmaQTvc9V/y1HbeH7/GISh0MV2NQZLsolGYcm
+
+
+
