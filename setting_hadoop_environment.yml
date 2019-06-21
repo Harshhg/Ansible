@@ -1,0 +1,32 @@
+---
+ - hosts: localhost
+   vars:
+    hadoop_url: http://13.234.66.67/summer19/bigdata/hadoop-2.7.3.tar.gz # Must be .tar.gz
+    java8_url: http://monalisa.cern.ch/MONALISA/download/java/jdk-8-linux-x64.rpm  # Must be .rpm
+   tasks:
+    - name: Downloading Hadoop V2 ...
+      get_url:
+       url: "{{hadoop_url}}"
+       dest: /opt/
+    - name: Installing Hadoop V2 in /opt/ ...
+      unarchive:
+       src: "/opt/hadoop-2.7.3.tar.gz"
+       dest: /opt/
+    - name: Downloading Java 1.8 ...
+      get_url: 
+       url: "{{java8_url}}"
+       dest: /opt/java8.rpm
+    - name: Installing Java 1.8 ...
+      yum:
+       name: /opt/java8.rpm 
+       state: installed 
+    - name: Setting up Path ...
+      blockinfile: 
+       path: /root/.bashrc
+       backup: yes
+       block: |
+        HADOOP_HOME=/opt/hadoop-2.7.3
+        JAVA_HOME=/usr/java/jdk1.8.0
+        PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/sbin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+        export PATH
+   
