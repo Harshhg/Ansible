@@ -5,12 +5,15 @@
 
 ---
  - hosts: localhost
+   vars:                # using variables
+    imgid: ami-5b673c34 # defining variables
    tasks: 
+        
     - ec2: 
         key_name: harshawslinux  #  Access key that contains password
         region: ap-south-1      # region name
         instance_type: t2.micro      # instance type
-        image: ami-5b673c34     # aws instance image id..(fixed)
+        image: "{{imgid}}"     # aws instance image id..fetched from variable(fixed)
         count: 1                # number of instances to launch
         aws_access_key: AKIAJMFNVMJLVWF3GMYQ  # find your keys under security credentials
         aws_secret_key: 1EFNmaQTvc9V/y1HbeH7/GISh0MV2NQZLsolGYcm
