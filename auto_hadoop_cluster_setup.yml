@@ -75,31 +75,6 @@
     #**********************************************************
 
     
-
-
-
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-----------------------------------DATANODE SECTION --------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>
-#  ----------  Configuring DATA Node ----------
-
- - hosts: datanode
-   remote_user: "{{username}}"
-   sudo: yes
-   vars:
-   tasks:
-    - name: Configuring DataNode "hdfs-site.xml" ...
-      blockinfile: 
-       path: /home/{{username}}/hadoop-2.7.3/etc/hadoop/hdfs-site.xml
-       backup: yes 
-       insertafter: "<configuration>" 
-       block: | 
-        <property>
-        <name>dfs.datanode.data.dir</name> 
-        <value>/home/{{username}}/{{datanodename}}</value> 
-        </property> 
-
-    - name: Starting the DATANODES ...
-      command: hadoop-daemon.sh start datanode
-   
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-----------------------------------NAMENODE SECTION --------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>
 #  ----------  Configuring Name Node ----------   
    
@@ -128,3 +103,28 @@
       command: hdfs namenode -y -format
   
 # ************************************************  
+
+
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-----------------------------------DATANODE SECTION --------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>
+#  ----------  Configuring DATA Node ----------
+
+ - hosts: datanode
+   remote_user: "{{username}}"
+   sudo: yes
+   vars:
+   tasks:
+    - name: Configuring DataNode "hdfs-site.xml" ...
+      blockinfile: 
+       path: /home/{{username}}/hadoop-2.7.3/etc/hadoop/hdfs-site.xml
+       backup: yes 
+       insertafter: "<configuration>" 
+       block: | 
+        <property>
+        <name>dfs.datanode.data.dir</name> 
+        <value>/home/{{username}}/{{datanodename}}</value> 
+        </property> 
+
+    - name: Starting the DATANODES ...
+      command: hadoop-daemon.sh start datanode
+   
+
