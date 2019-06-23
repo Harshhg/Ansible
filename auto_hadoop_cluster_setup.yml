@@ -22,10 +22,10 @@
    #    url: "{{hadoop_url}}"
    #    dest: /home/{{username}}/
    
-    - name: Installing Hadoop V2 in /home/user/...
-      unarchive:
-       src: "/home/{{username}}/hadoop-2.7.3.tar.gz"
-       dest: /home/{{username}}/
+    #- name: Installing Hadoop V2 in /home/user/...
+    #  unarchive:
+    #   src: "/home/{{username}}/hadoop-2.7.3.tar.gz"
+    #   dest: /home/{{username}}/
   
    # - name: Downloading Java 1.8 ...
    #   get_url: 
@@ -72,6 +72,8 @@
         <value>hdfs://{{namenodeip}}</value> 
         </property> 
 
+    - name: Managing Permissions
+      shell: sudo chown {{username}}:{{username}} /home/{{username}}/hadoop-2.7.3 -R
     #**********************************************************
 
     
@@ -81,7 +83,6 @@
  - hosts: namenode
    remote_user: "{{username}}"
    sudo: yes
-   vars:
    tasks:
     - name: Configuring NameNode " hdfs-site.xml "...
       blockinfile:
@@ -99,8 +100,14 @@
     - name: Configuring Host Names .........
       command: hostnamectl set-hostname {{namenodehostname}}
     
-    - name: Formatting the NameNode ...
-      command: hdfs namenode -y -format
+    #- name: bashrc reload
+    #  shell: exec bash   
+    #  args:
+    #    executable:
+    #      /bin/bash
+
+    #- name: Formatting the NameNode ...
+    #  command: hdfs namenode  -format
   
 # ************************************************  
 
@@ -124,7 +131,6 @@
         <value>/home/{{username}}/{{datanodename}}</value> 
         </property> 
 
-    - name: Starting the DATANODES ...
-      command: hadoop-daemon.sh start datanode
+    #- name: Starting the DATANODES ...
+    #  command: hadoop-daemon.sh start datanode
    
-
