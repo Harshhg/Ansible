@@ -17,21 +17,21 @@
    remote_user: "{{username}}"   # Datanode username
    sudo: yes
    tasks:
-   # - name: Downloading Hadoop V2 ...
-   #   get_url:
-   #    url: "{{hadoop_url}}"
-   #    dest: /home/{{username}}/
+    - name: Downloading Hadoop V2 ...
+      get_url:
+       url: "{{hadoop_url}}"
+       dest: /home/{{username}}/
    
-    #- name: Installing Hadoop V2 in /home/user/...
-    #  unarchive:
-    #   src: "/home/{{username}}/hadoop-2.7.3.tar.gz"
-    #   dest: /home/{{username}}/
+    - name: Installing Hadoop V2 in /home/user/...
+      unarchive:
+       src: "/home/{{username}}/hadoop-2.7.3.tar.gz"
+       dest: /home/{{username}}/
   
-   # - name: Downloading Java 1.8 ...
-   #   get_url: 
-   #    url: "{{java8_url}}"
-   #    dest: /home/{{username}}/java8.rpm
-   # 
+    - name: Downloading Java 1.8 ...
+      get_url: 
+       url: "{{java8_url}}"
+       dest: /home/{{username}}/java8.rpm
+    
     - name: Installing Java 1.8 ...
       yum:
        name: /home/{{username}}/java8.rpm 
