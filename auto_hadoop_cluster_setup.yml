@@ -1,0 +1,99 @@
+---
+ - hosts: 13.232.134.228
+   remote_user: ec2-user
+   sudo: yes
+   vars:
+    hadoop_url: http://13.234.66.67/summer19/bigdata/hadoop-2.7.3.tar.gz # Must be .tar.gz
+    java8_url: http://monalisa.cern.ch/MONALISA/download/java/jdk-8-linux-x64.rpm  # Must be .rpm
+    username: ec2-user
+    datanodename: mydatanode
+    namenodeip: ec2-13-235-87-1.ap-south-1.compute.amazonaws.com:9000  # ip address/public dns with port..ex:-  ip:port
+   tasks:
+   # - name: Downloading Hadoop V2 ...
+   #   get_url:
+   #    url: "{{hadoop_url}}"
+   #    dest: /home/{{username}}/
+   # - name: Installing Hadoop V2 in /home/user/...
+   #   unarchive:
+   #    src: "/opt/hadoop-2.7.3.tar.gz"
+   #    dest: /home/{{username}}/
+   # - name: Downloading Java 1.8 ...
+   #   get_url: 
+   #    url: "{{java8_url}}"
+   #    dest: /home/{{username}}/java8.rpm
+   # - name: Installing Java 1.8 ...
+   #   yum:
+   #    name: /home/{{username}}/java8.rpm 
+   #    state: installed 
+    - name: Setting up Path ...
+      blockinfile: 
+       path: /home/{{username}}/.bashrc
+       backup: yes
+       block: |
+        HADOOP_HOME=/home/{{username}}/hadoop-2.7.3
+        JAVA_HOME=/usr/java/jdk1.8.0
+        PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/sbin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+        export PATH
+    - name: Setting JAVA Path in HADOOP .. (hadoop-env.sh)
+      lineinfile:
+       path: /home/{{username}}/hadoop-2.7.3/etc/hadoop/hadoop-env.sh
+       regexp: '^export JAVA_HOME='
+       line: 'export JAVA_HOME=/usr/java/jdk1.8.0'   
+       
+#    - name: Sourcing the bashrc file
+ #     shell: source /home/{{username}}/.bashrc
+
+    - name: Configuring datanode core-site.xml...
+      blockinfile: 
+       path: /home/ec2-user/hadoop-2.7.3/etc/hadoop/core-site.xml
+       backup: yes 
+       insertafter: "<configuration>" 
+       block: | 
+        <property>
+        <name>fs.defaultFS</name> 
+        <value>hdfs://{{namenodeip}}</value> 
+        </property> 
+
+    - name: Configuring datanode hdfs-site.xml...
+      blockinfile: 
+       path: /home/ec2-user/hadoop-2.7.3/etc/hadoop/hdfs-site.xml
+       backup: yes 
+       insertafter: "<configuration>" 
+       block: | 
+        <property>
+        <name>dfs.datanode.data.dir</name> 
+        <value>/home/{{username}}/{{datanodename}}</value> 
+        </property> 
+
+ - hosts: localhost
+   remote_user: ec2-user
+   sudo: yes
+   vars:
+    namenodename: mynamenode
+    username: ec2-user
+    namenodeip: ec2-13-235-87-1.ap-south-1.compute.amazonaws.com:9000  # ip address/public dns with port..ex:-  ip:port
+   tasks:
+    - name: Setting JAVA Path in HADOOP NAMENODE .. (hadoop-env.sh)
+      lineinfile:
+       path: /home/{{username}}/hadoop-2.7.3/etc/hadoop/hadoop-env.sh
+       regexp: '^export JAVA_HOME='
+       line: 'export JAVA_HOME=/usr/java/jdk1.8.0'   
+
+    - name: Configuring Namenode core-site.xml...
+      blockinfile:
+       path: /home/ec2-user/hadoop-2.7.3/etc/hadoop/core-site.xml
+       backup: yes
+       insertafter: "<configuration>"
+       block: |
+        <property>                                                                                                                                                                     <name>fs.defaultFS</name>                                                                                                                                                      <value>hdfs://{{namenodeip}}</value>  
+        </property>                                                                                                                                                            
+                                                                                                                                                                               
+    - name: Configuring namenode hdfs-site.xml...
+      blockinfile:
+       path: /home/ec2-user/hadoop-2.7.3/etc/hadoop/hdfs-site.xml
+       backup: yes
+       insertafter: "<configuration>"
+       block: |
+         <property>                                                                                                                                                            
+         <name>dfs.namenode.name.dir</name>                                                                                                                                    
+         <value>/home/{{username}}/{{namenodename}}</value>                                                                                                                             </property>  
