@@ -14,16 +14,8 @@
 # ---- Configuring DATA NODES and Name Node ----
 ---
  - hosts: NN_and_DN    # Group name of DATANODES  .. (Configure this in  /etc/ansible/hosts)
-   sudo: yes
-   set_fact:
-    hadoop_url: http://13.234.66.67/summer19/bigdata/hadoop-2.7.3.tar.gz # Must be .tar.gz
-    java8_url: http://monalisa.cern.ch/MONALISA/download/java/jdk-8-linux-x64.rpm  # Must be .rpm
-    username: ec2-user    # username of the datanode where hadoop is to be installed
-    datanodename: mydatanode   # directory name of DataNode where HDFS data would be stored.. must be unique
-    namenodename: mynamenode    # Enter the directory name where your namenode will be configured.. must be unique
-    namenodeip: ec2-13-235-87-1.ap-south-1.compute.amazonaws.com:9000  # ip address/public dns with port..ex:-  ip:port
-    namenodehostname: ec2-13-235-87-1.ap-south-1.compute.amazonaws.com   # Enter the public DNS in case of AWS.. of your namenode
    remote_user: "{{username}}"   # Datanode username
+   sudo: yes
    tasks:
    # - name: Downloading Hadoop V2 ...
    #   get_url:
