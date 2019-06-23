@@ -11,17 +11,18 @@
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-----------------------------------DATANODE SECTION --------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>
 
-# ---- Configuring DATA NODES ----
+# ---- Configuring DATA NODES and Name Node ----
 ---
- - hosts: datanodes    # Group name of DATANODES  .. (Configure this in  /etc/ansible/hosts)
+ - hosts: NN_and_DN    # Group name of DATANODES  .. (Configure this in  /etc/ansible/hosts)
    sudo: yes
-   vars:
+   set_fact:
     hadoop_url: http://13.234.66.67/summer19/bigdata/hadoop-2.7.3.tar.gz # Must be .tar.gz
     java8_url: http://monalisa.cern.ch/MONALISA/download/java/jdk-8-linux-x64.rpm  # Must be .rpm
     username: ec2-user    # username of the datanode where hadoop is to be installed
     datanodename: mydatanode   # directory name of DataNode where HDFS data would be stored.. must be unique
+    namenodename: mynamenode    # Enter the directory name where your namenode will be configured.. must be unique
     namenodeip: ec2-13-235-87-1.ap-south-1.compute.amazonaws.com:9000  # ip address/public dns with port..ex:-  ip:port
- 
+    namenodehostname: ec2-13-235-87-1.ap-south-1.compute.amazonaws.com   # Enter the public DNS in case of AWS.. of your namenode
    remote_user: "{{username}}"   # Datanode username
    tasks:
    # - name: Downloading Hadoop V2 ...
@@ -68,7 +69,7 @@
 
 # *************************************************************
     
-    - name: Configuring DataNode "core-site.xml "...
+    - name: Configuring DataNode and NameNode "core-site.xml "...
       blockinfile: 
        path: /home/{{username}}/hadoop-2.7.3/etc/hadoop/core-site.xml
        backup: yes 
@@ -81,6 +82,18 @@
 
     #**********************************************************
 
+    
+
+
+
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-----------------------------------DATANODE SECTION --------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>
+#  ----------  Configuring DATA Node ----------
+
+ - hosts: datanode
+   remote_user: "{{username}}"
+   sudo: yes
+   vars:
+   tasks:
     - name: Configuring DataNode "hdfs-site.xml" ...
       blockinfile: 
        path: /home/{{username}}/hadoop-2.7.3/etc/hadoop/hdfs-site.xml
@@ -94,52 +107,27 @@
 
     - name: Starting the DATANODES ...
       command: hadoop-daemon.sh start datanode
-
-
-
+   
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-----------------------------------NAMENODE SECTION --------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>
-#  ----------  Configuring Name Node ----------
-
+#  ----------  Configuring Name Node ----------   
+   
  - hosts: namenode
-   remote_user: ec2-user
-   sudo: no
+   remote_user: "{{username}}"
+   sudo: yes
    vars:
-    namenodename: mynamenode    # Enter the directory name where your namenode will be configured.. must be unique
-    namenodeusername: ec2-user  # Username where to configure the hadoop
-    namenodeip: ec2-13-235-87-1.ap-south-1.compute.amazonaws.com:9000  # ip address/public dns with port..ex:-  ip:port
-    namenodehostname: ec2-13-235-87-1.ap-south-1.compute.amazonaws.com   # Enter the public DNS in case of AWS.. of your namenode
    tasks:
-    - name: Setting JAVA Path in HADOOP NAMENODE .. (hadoop-env.sh)
-      lineinfile:
-       path: /home/{{namenodeusername}}/hadoop-2.7.3/etc/hadoop/hadoop-env.sh
-       regexp: '^export JAVA_HOME='
-       line: 'export JAVA_HOME=/usr/java/jdk1.8.0'   
-
-#  **************************************************
-
-    - name: Configuring NameNode "core-site.xml".....
-      blockinfile:
-       path: /home/{{namenodeusername}}/hadoop-2.7.3/etc/hadoop/core-site.xml
-       backup: yes
-       insertafter: "<configuration>"
-       block: |
-        <property>
-        <name>fs.defaultFS</name>
-        <value>hdfs://{{namenodeip}}</value>  
-        </property>                                                                                                                                                            
-# ***************************************************                                                                                                                                                                               
     - name: Configuring NameNode " hdfs-site.xml "...
       blockinfile:
-       path: /home/{{namenodeusername}}/hadoop-2.7.3/etc/hadoop/hdfs-site.xml
+       path: /home/{{username}}/hadoop-2.7.3/etc/hadoop/hdfs-site.xml
        backup: yes
        insertafter: "<configuration>"
        block: |
         <property> 
         <name>dfs.namenode.name.dir</name>
-        <value>/home/{{namenodeusername}}/{{namenodename}}</value> 
+        <value>/home/{{username}}/{{namenodename}}</value> 
         </property>
 
-# ************************************************
+
 
     - name: Configuring Host Names .........
       command: hostnamectl set-hostname {{namenodehostname}}
@@ -147,4 +135,4 @@
     - name: Formatting the NameNode ...
       command: hdfs namenode -y -format
   
-  
+# ************************************************  
