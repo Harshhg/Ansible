@@ -1,0 +1,11 @@
+---
+ - hosts: localhost
+   #sudo: yes
+   tasks:
+    - name: Listing all attached harddisk in local system ..
+      command: lsblk
+      register: x   # To store the output of the previous module in variable.. (here x)
+
+    - name : Printing the value of x
+      debug: var=x      # To print the message in terminal we use debug.  To print variable -. var=variable_name
+
