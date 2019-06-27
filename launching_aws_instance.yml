@@ -15,8 +15,8 @@
         instance_type: t2.micro      # instance type
         image: "{{imgid}}"     # aws instance image id..fetched from variable(fixed)
         count: 1                # number of instances to launch
-        aws_access_key: AKIAJMFNVMJLVWF3GMYQ  # find your keys under security credentials
-        aws_secret_key: 1EFNmaQTvc9V/y1HbeH7/GISh0MV2NQZLsolGYcm
+        aws_access_key:   # find your keys under security credentials
+        aws_secret_key: 
 
 
 
